@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-5 col-sm-12">
+    <div class="col-lg-5 col-sm-12 text-center">
         <h2>單一產品細節</h2>
         <template v-if="chooseIsNull">
             <div class="card mb-3">

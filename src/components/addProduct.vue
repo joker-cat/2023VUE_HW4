@@ -119,17 +119,17 @@ export default {
         },
 
         async mainImage() {
-            if (this.addProduct.data.main.trim() === "") return;
-            if (await this.isImage(this.addProduct.data.main)) {
-                this.addProduct.data.imageUrl = this.addProduct.data.main;
-                this.addProduct.data.main = '';
+            if (this.mydata.main.trim() === "") return;
+            if (await this.isImage(this.mydata.main)) {
+                this.mydata.imageUrl = this.mydata.main;
+                this.mydata.main = '';
             }
         },
         additionalImage() {
-            if (this.addProduct.data.imagesUrl.length === 5 || this.addProduct.data.additional.trim() === "") return;
-            if (this.isImage(this.addProduct.data.imagesUrl)) {
-                this.addProduct.data.imagesUrl.push(this.addProduct.data.additional);
-                this.addProduct.data.additional = '';
+            if (this.mydata.imagesUrl.length === 5 || this.mydata.additional.trim() === "") return;
+            if (this.isImage(this.mydata.imagesUrl)) {
+                this.mydata.imagesUrl.push(this.mydata.additional);
+                this.mydata.additional = '';
             }
         },
         postProduct() {
@@ -165,16 +165,19 @@ export default {
         },
     },
     computed: {
+        mydata(){
+            return this.addProduct.data;
+        },
         isDisabled() {
             return (
-                this.addProduct.data.title === "" ||
-                this.addProduct.data.category === "" ||
-                this.addProduct.data.origin_price === "" ||
-                this.addProduct.data.price === "" ||
-                this.addProduct.data.description === "" ||
-                this.addProduct.data.content === "" ||
-                this.addProduct.data.imageUrl === "" ||
-                this.addProduct.data.imagesUrl.length === 0
+                this.mydata.title === "" ||
+                this.mydata.category === "" ||
+                this.mydata.origin_price === "" ||
+                this.mydata.price === "" ||
+                this.mydata.description === "" ||
+                this.mydata.content === "" ||
+                this.mydata.imageUrl === "" ||
+                this.mydata.imagesUrl.length === 0
             ) ?
                 true : false;
         },
