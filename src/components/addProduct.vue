@@ -64,8 +64,8 @@
                                 </div>
                             </div>
                             <div class="mb-2">
-                                <label for="imageUrl" class="form-label">圖片展示(按新增獲取假圖)</label>
-                                <img class="img-fluid" :src="addProduct.data.imageUrl" alt="圖片ERR">
+                                <label for="imageUrl" class="form-label">圖片展示(請新增圖片網址)</label>
+                                <img v-if="addProduct.data.imageUrl!==''" class="img-fluid" :src="addProduct.data.imageUrl" alt="圖片ERR">
                                 <template v-for="(img, idx) in addProduct.data.imagesUrl" :key="img">
                                     <img :src="img" alt="圖片error" class="images m-2" style="width: 200px;">
                                 </template>

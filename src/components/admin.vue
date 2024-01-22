@@ -45,7 +45,8 @@
                                     data-bs-target="#putProductModal" @click="editChoose(item)">
                                     編輯
                                 </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm" @click="delProduct(item.id)">
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" @click="deleteChoose(item)">
                                     刪除
                                 </button>
                             </td>
@@ -57,32 +58,8 @@
                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#productModal">建立新的產品</button>
                 </div>
             </div>
-            <!-- <div class="col-lg-5 col-sm-12">
-                <h2>單一產品細節</h2>
-                <template v-if="chooseIsNull">
-                    <div class="card mb-3">
-                        <img :src="userChoose.imageUrl" class="card-img-top primary-image" alt="主圖">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                {{ userChoose.title }}
-                                <span class="badge bg-primary ms-2">{{ userChoose.category }}</span>
-                            </h5>
-                            <p class="card-text">商品描述：{{ userChoose.description }}</p>
-                            <p class="card-text">商品內容：{{ userChoose.content }}</p>
-                            <div class="d-flex">
-                                <p class="card-text me-2">{{ userChoose.price }}</p>
-                                <p class="card-text text-secondary"><del>{{ userChoose.origin_price }}</del></p>
-                                元 / {{ userChoose.unit }}
-                            </div>
-                        </div>
-                    </div>
-                    <template v-for="(img, idx) in userChoose.imagesUrl" :key="img">
-                        <img :src="img" alt="圖片error" class="images m-2">
-                    </template>
-                </template>
-                <p class="text-secondary" v-if="!chooseIsNull">請選擇一個商品查看</p>
-            </div> -->
-            <productInfo :userChoose="userChoose"/>
+            <modal :chooseProduct="delChoose" @allowDelete="delProduct" />
+            <productInfo :userChoose="userChoose" />
             <addProduct @reloadRender="render" />
             <editProduct :choose="putChoose" @reloadRender="render" />
         </div>
@@ -93,6 +70,7 @@
 import addProduct from './addProduct.vue';
 import editProduct from './editProduct.vue';
 import productInfo from './productInfo.vue';
+import modal from './modal.vue';
 export default {
     data() {
         return {
@@ -100,6 +78,7 @@ export default {
             hasCookie: false, //是否有cookie
             userChoose: {}, //品項選擇
             putChoose: {}, //品項編輯
+            delChoose: {}, //即將刪除
             products: [], //全部品項,
             addProduct: { //新增
                 data: {
@@ -146,9 +125,13 @@ export default {
         editChoose(item) {
             this.putChoose = { ...item };
         },
+        deleteChoose(item) {
+            this.delChoose = { ...item };
+        },
         detail(item) {
             this.userChoose = { ...item };
         },
+
         render() {
             this.$http
                 .get('https://ec-course-api.hexschool.io/v2/api/joooker/admin/products')
@@ -163,10 +146,10 @@ export default {
     components: {
         addProduct,
         editProduct,
-        productInfo
+        productInfo,
+        modal
     },
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
