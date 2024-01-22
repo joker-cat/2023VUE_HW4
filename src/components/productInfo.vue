@@ -1,6 +1,6 @@
 <template>
-    <div class="col-lg-5 col-sm-12 text-center">
-        <h2>單一產品細節</h2>
+    <div class="col-lg-5 col-sm-12">
+        <h2 class="text-center">單一產品細節</h2>
         <template v-if="chooseIsNull">
             <div class="card mb-3">
                 <img :src="userChoose.imageUrl" class="card-img-top primary-image" alt="主圖">
@@ -18,9 +18,11 @@
                     </div>
                 </div>
             </div>
-            <template v-for="(img, idx) in userChoose.imagesUrl" :key="img">
-                <img :src="img" alt="圖片error" class="images m-2">
-            </template>
+            <div class="text-center">
+                <template v-for="img in userChoose.imagesUrl" :key="img">
+                    <img :src="img" alt="圖片error" class="images m-2">
+                </template>
+            </div>
         </template>
         <p class="text-secondary" v-if="!chooseIsNull">請選擇一個商品查看</p>
     </div>
@@ -49,6 +51,6 @@ img {
 
 .images {
     width: 200px;
-    display: inline;
+    display: inline-block;
 }
 </style>

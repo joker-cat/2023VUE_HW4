@@ -23,9 +23,11 @@
                             </div>
                         </div>
                     </div>
-                    <template v-for="(img, idx) in chooseProduct.imagesUrl" :key="img">
-                        <img :src="img" alt="圖片error" class="images m-2">
-                    </template>
+                    <div class="text-center">
+                        <template v-for="img in chooseProduct.imagesUrl" :key="img">
+                            <img :src="img" alt="圖片error" class="images m-2">
+                        </template>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -41,7 +43,7 @@ export default {
     props: ["chooseProduct"],
     methods: {
         allowDelete() {
-            this.$emit('allowDelete',this.chooseProduct.id);
+            this.$emit('allowDelete', this.chooseProduct.id);
         }
     }
 }
