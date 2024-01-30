@@ -51,14 +51,14 @@
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="新增主圖網址(限1個)"
                                         aria-label="新增主圖網址(限1個)" aria-describedby="button-addon1"
-                                        v-model="addProduct.data.main">
+                                        v-model="main">
                                     <button class="btn btn-outline-secondary" type="button" id="button-addon1"
                                         @click="mainImage">+</button>
                                 </div>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="新增附圖網址(限5個)"
                                         aria-label="新增附圖網址(限5個)" aria-describedby="button-addon2"
-                                        v-model="addProduct.data.additional">
+                                        v-model="additional">
                                     <button class="btn btn-outline-secondary" type="button" id="button-addon2"
                                         @click="additionalImage">+</button>
                                 </div>
@@ -87,6 +87,8 @@ import * as bootstrap from "bootstrap/dist/js/bootstrap.min.js";
 export default {
     data() {
         return {
+            main: '',
+            additional: '',
             addProduct: { //新增
                 data: {
                     "title": "",
@@ -97,8 +99,6 @@ export default {
                     "description": "",
                     "content": "",
                     "is_enabled": 0,
-                    "main": '',
-                    "additional": '',
                     "imageUrl": "",
                     "imagesUrl": []
                 }
@@ -119,17 +119,17 @@ export default {
             });
         },
         async mainImage() {
-            if (this.mydata.main.trim() === "") return;
-            if (await this.isImage(this.mydata.main)) {
-                this.mydata.imageUrl = this.mydata.main;
-                this.mydata.main = '';
+            if (this.main.trim() === "") return;
+            if (await this.isImage(this.main)) {
+                this.mydata.imageUrl = this.main;
+                this.main = '';
             }
         },
         additionalImage() {
-            if (this.mydata.imagesUrl.length === 5 || this.mydata.additional.trim() === "") return;
+            if (this.mydata.imagesUrl.length === 5 || this.additional.trim() === "") return;
             if (this.isImage(this.mydata.imagesUrl)) {
-                this.mydata.imagesUrl.push(this.mydata.additional);
-                this.mydata.additional = '';
+                this.mydata.imagesUrl.push(this.additional);
+                this.additional = '';
             }
         },
         postProduct() {

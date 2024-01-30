@@ -168,7 +168,6 @@ export default {
             this.$refs.callEditModal.openModal();
         },
         openDelModal(item){
-            console.log(item);
             this.delChoose = { ...item };
             console.log(this.delChoose);
             this.$refs.callDelModal.openModal();

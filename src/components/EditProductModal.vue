@@ -1,6 +1,5 @@
 <template>
-    <div ref="editModal" class="modal fade" tabindex="-1" aria-labelledby="putProductModalLabel"
-        aria-hidden="true">
+    <div ref="editModal" class="modal fade" tabindex="-1" aria-labelledby="putProductModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-0">
                 <div class="modal-header bg-danger text-white">
@@ -71,11 +70,20 @@
 
 <script>
 import * as bootstrap from "bootstrap/dist/js/bootstrap.min.js";
-
 export default {
     props: ['choose'],
     data() {
         return {
+            inputNull: [],
+            warmObj: {
+                'title': '商品名稱',
+                'price': '售價',
+                'origin_price': '原價',
+                'category': '系列',
+                'title': '商品名稱',
+                'description': '商品描述',
+                'content': '商品內容'
+            },
             change: {
                 data: { ...this.choose }
             }
@@ -87,7 +95,7 @@ export default {
     watch: {
         choose(newChoose) {
             this.change = { data: { ...newChoose } };
-        }
+        },
     },
     computed: {
         trunBoolen() {
@@ -95,23 +103,37 @@ export default {
         }
     },
     methods: {
-        putProducts() {
-            this.$http
-                .put(`https://ec-course-api.hexschool.io/v2/api/joooker/admin/product/${this.choose.id}`, this.change)
-                .then((res) => {
-                    if (res.data.success) {
-                        this.hasCookie = res.data.success;
-                        this.$emit('reloadRender');
-                        alert('修改成功');
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                })
+        checkEmptyValues() {
+            for (const key in this.change.data) {
+                if (this.change.data[key] === '') {
+                    this.inputNull.push(this.warmObj[key]);
+                }
+            }
         },
-        openModal(){
+        putProducts() {
+            this.checkEmptyValues();
+            if (this.inputNull.length === 0) {
+                this.$http
+                    .put(`https://ec-course-api.hexschool.io/v2/api/joooker/admin/product/${this.choose.id}`, this.change)
+                    .then((res) => {
+                        if (res.data.success) {
+                            this.hasCookie = res.data.success;
+                            this.$emit('reloadRender');
+                            alert('修改成功');
+                        }
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+            } else {
+                alert('請確實填寫 : ' + this.inputNull.join(' , '))
+            }
+
+
+        },
+        openModal() {
             this.editModal.show();
         },
-        closeModal(){
+        closeModal() {
             this.editModal.hide();
         },
     },
