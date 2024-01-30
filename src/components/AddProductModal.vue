@@ -1,5 +1,5 @@
 <template>
-    <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
+    <div ref="addModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content border-0">
@@ -75,7 +75,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" @click="postProduct" :disabled="isDisabled">新增衣服</button>
+                    <button type="button" class="btn btn-primary" @click="postProduct" :disabled="isDisabled">新增產品</button>
                 </div>
             </div>
         </div>
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import * as bootstrap from "bootstrap/dist/js/bootstrap.min.js";
 export default {
     data() {
         return {
@@ -117,7 +118,6 @@ export default {
                 };
             });
         },
-
         async mainImage() {
             if (this.mydata.main.trim() === "") return;
             if (await this.isImage(this.mydata.main)) {
@@ -139,15 +139,19 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.success) {
-                        this.hasCookie = res.data.success;
-                        this.$emit('reloadRender');
                         this.reset();
+                        this.$emit('reloadRender');
                         alert('已新增');
-
                     }
                 }).catch((error) => {
                     console.log(error);
                 })
+        },
+        openModal(){
+            this.addModal.show();
+        },
+        closeModal(){
+            this.addModal.hide();
         },
         reset() {
             this.addProduct.data = {
@@ -181,6 +185,9 @@ export default {
             ) ?
                 true : false;
         },
+    },
+    mounted() {
+        this.addModal = new bootstrap.Modal(this.$refs.addModal);
     }
 }
 </script>

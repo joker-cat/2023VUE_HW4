@@ -1,10 +1,10 @@
 <template>
-    <div id="putProductModal" ref="putProductModal" class="modal fade" tabindex="-1" aria-labelledby="putProductModalLabel"
+    <div ref="editModal" class="modal fade" tabindex="-1" aria-labelledby="putProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-0">
                 <div class="modal-header bg-danger text-white">
-                    <h5 id="putProductModalLabel" class="modal-title">
+                    <h5 class="modal-title">
                         <span>編輯產品</span>
                     </h5>
                 </div>
@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import * as bootstrap from "bootstrap/dist/js/bootstrap.min.js";
+
 export default {
     props: ['choose'],
     data() {
@@ -98,13 +100,23 @@ export default {
                 .put(`https://ec-course-api.hexschool.io/v2/api/joooker/admin/product/${this.choose.id}`, this.change)
                 .then((res) => {
                     if (res.data.success) {
+                        this.hasCookie = res.data.success;
                         this.$emit('reloadRender');
-                        alert('已更改');
+                        alert('修改成功');
                     }
                 }).catch((error) => {
                     console.log(error);
                 })
         },
+        openModal(){
+            this.editModal.show();
+        },
+        closeModal(){
+            this.editModal.hide();
+        },
+    },
+    mounted() {
+        this.editModal = new bootstrap.Modal(this.$refs.editModal);
     }
 }
 </script>

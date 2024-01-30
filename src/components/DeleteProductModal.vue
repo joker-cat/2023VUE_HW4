@@ -1,9 +1,10 @@
 <template>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div ref="delModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">確定要刪除嗎?</h5>
+                    <h5 class="modal-title">確定要刪除嗎?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -39,12 +40,22 @@
 </template>
 
 <script>
+import * as bootstrap from "bootstrap/dist/js/bootstrap.min.js";
 export default {
     props: ["chooseProduct"],
     methods: {
         allowDelete() {
-            this.$emit('allowDelete', this.chooseProduct.id);
+            this.$emit('reloadRender', this.chooseProduct.id);
+        },
+        openModal(){
+            this.delModal.show();
+        },
+        closeModal(){
+            this.delModal.hide();
         }
+    },
+    mounted() {
+        this.delModal = new bootstrap.Modal(this.$refs.delModal);
     }
 }
 </script>

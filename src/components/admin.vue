@@ -41,36 +41,54 @@
                                 <button type="button" class="btn btn-primary" @click="detail(item)">查看細節</button>
                             </td>
                             <td width="140">
-                                <button type="button" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal"
-                                    data-bs-target="#putProductModal" @click="editChoose(item)">
+                                <button type="button" class="btn btn-outline-primary btn-sm me-3" @click="openEditModal(item)">
                                     編輯
                                 </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal" @click="deleteChoose(item)">
+                                <button type="button" class="btn btn-outline-danger btn-sm" @click="openDelModal(item)">
                                     刪除
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between px-4">
-                    <span class="align-self-center">目前有 {{ products.length }} 項產品</span>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#productModal">建立新的產品</button>
+                <div class="d-flex justify-content-between align-items-center px-4">
+                    <span>目前有 {{ products.length }} 項產品</span>
+                    <div aria-label="Page navigation example d-flex">
+                        <ul class="pagination p-0 m-auto">
+                            <li class="page-item" :class="{ disabled: !pagination.has_pre }">
+                                <a class="page-link" aria-label="Previous" style="cursor: pointer"
+                                    @click="renderProduct(pagination.current_page - 1)">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" :class="{ active: page === pagination.current_page }"
+                                v-for="page in pagination.total_pages" :key="'mypage' + page">
+                                <a class="page-link" style="cursor: pointer" @click="renderProduct(page)">{{ page }}</a>
+                            </li>
+                            <li class="page-item" :class="{ disabled: !pagination.has_next }">
+                                <a class="page-link" aria-label="Next" style="cursor: pointer"
+                                    @click="renderProduct(pagination.current_page + 1)">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-success" @click="openAddModal">建立新的產品</button>
                 </div>
             </div>
-            <modal :chooseProduct="delChoose" @allowDelete="delProduct" />
-            <productInfo :userChoose="userChoose" />
-            <addProduct @reloadRender="render" />
-            <editProduct :choose="putChoose" @reloadRender="render" />
+            <DeleteProductModal ref="callDelModal" :chooseProduct="delChoose" @reloadRender="delProduct" />
+            <ProductInfonation :userChoose="userChoose" />
+            <AddProduct ref="callAddModal"  @reloadRender="colseAddModal"/>
+            <EditProduct ref="callEditModal" :choose="putChoose" @reloadRender="colseEditModal" />
         </div>
     </div>
 </template>
 
 <script>
-import addProduct from './addProduct.vue';
-import editProduct from './editProduct.vue';
-import productInfo from './productInfo.vue';
-import modal from './modal.vue';
+import AddProduct from './AddProductModal.vue';
+import EditProduct from './EditProductModal.vue';
+import ProductInfonation from './ProductInfonation.vue';
+import DeleteProductModal from './DeleteProductModal.vue';
 export default {
     data() {
         return {
@@ -80,6 +98,11 @@ export default {
             putChoose: {}, //品項編輯
             delChoose: {}, //即將刪除
             products: [], //全部品項,
+            pagination: {}, //總頁數
+            pages: 1, //當前頁數
+            delModal: null,
+            addModal: null,
+            editModal: null,
             addProduct: { //新增
                 data: {
                     "title": "",
@@ -105,7 +128,7 @@ export default {
         if (this.hasCookie === true) {
             this.$http.defaults.headers.common['Authorization'] =
                 document.cookie.replace(/(?:(?:^|.*;\s*)mycookieTest\s*\=\s*([^;]*).*$)|^.*$/, "$1",); //意思是下次發axios請求時，會把token以headers一起發送。
-            this.render();
+            this.renderProduct();
         }
     },
     methods: {
@@ -115,40 +138,61 @@ export default {
                 .then((res) => {
                     if (res.data.success) {
                         this.hasCookie = res.data.success;
-                        this.render();
+                        this.colseDelModal();
+                        this.renderProduct();
                         alert('已刪除');
                     }
                 }).catch((error) => {
                     console.log(error);
                 })
         },
-        editChoose(item) {
-            this.putChoose = { ...item };
-        },
-        deleteChoose(item) {
-            this.delChoose = { ...item };
-        },
         detail(item) {
             this.userChoose = { ...item };
         },
-
-        render() {
+        renderProduct(page = 1) {
             this.$http
-                .get('https://ec-course-api.hexschool.io/v2/api/joooker/admin/products')
+                .get(`https://ec-course-api.hexschool.io/v2/api/joooker/admin/products?page=${page}`)
                 .then((res) => {
+                    this.pagination = res.data.pagination;
                     this.products = res.data.products;
                 })
                 .catch((error) => {
                     console.log(error);
                 })
         },
+        openAddModal(){
+            this.$refs.callAddModal.openModal();
+        },
+        openEditModal(item){
+            this.putChoose = { ...item };
+            this.$refs.callEditModal.openModal();
+        },
+        openDelModal(item){
+            console.log(item);
+            this.delChoose = { ...item };
+            console.log(this.delChoose);
+            this.$refs.callDelModal.openModal();
+        },
+
+        colseAddModal(){
+            this.$refs.callAddModal.closeModal();
+            this.renderProduct();
+        },
+        colseEditModal(){
+            this.$refs.callEditModal.closeModal();
+            this.renderProduct();
+        },
+        colseDelModal(){
+            this.$refs.callDelModal.closeModal();
+            this.renderProduct();
+        }
     },
     components: {
-        addProduct,
-        editProduct,
-        productInfo,
-        modal
-    },
+        AddProduct,
+        EditProduct,
+        ProductInfonation,
+        DeleteProductModal
+    }
 }
 </script>
 

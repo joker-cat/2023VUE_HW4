@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="text-center">
-                <template v-for="img in userChoose.imagesUrl" :key="img">
+                <template v-for="(img,idx) in userChoose.imagesUrl" :key="img+idx">
                     <img :src="img" alt="圖片error" class="images m-2">
                 </template>
             </div>
